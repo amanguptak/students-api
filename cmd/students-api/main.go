@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/amanguptak/students-api/internal/config"
+	"github.com/amanguptak/students-api/internal/http/handlers/student"
 )
 
 func main() {
@@ -22,9 +23,7 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to my first golang end point"))
-	})
+	router.HandleFunc("POST /api/students", student.New())
 
 	//data base setup
 	// setup router
@@ -47,7 +46,7 @@ func main() {
 		err := server.ListenAndServe()
 
 		if err != nil {
-			log.Fatal("failed to start server",err.Error())
+			log.Fatal("failed to start server", err.Error())
 		}
 	}()
 
@@ -59,7 +58,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	// giving time for shutting down in 5 second 
+	// giving time for shutting down in 5 second
 	err := server.Shutdown(ctx) // shuting down server
 
 	if err != nil {
