@@ -1,0 +1,9 @@
+tmp_dir = "tmp"
+cmd     = "go build -o ./tmp/main ./cmd/students-api/main.go"
+bin     = "./tmp/main -config ./config/local.yaml"
+
+include_dir = ["cmd", "internal", "config"]
+include_ext = ["go", "yaml"]
+exclude_dir = ["tmp", "vendor"]
+
+log_time = true
