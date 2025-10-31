@@ -5,14 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 
+	"github.com/amanguptak/students-api/internal/storage"
 	"github.com/amanguptak/students-api/internal/types"
 	"github.com/amanguptak/students-api/internal/utils/response"
 	"github.com/go-playground/validator/v10"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var student types.Student
@@ -38,8 +40,6 @@ func New() http.HandlerFunc {
 			return
 		}
 
-	
-
 		if err := validator.New().Struct(student); err != nil {
 			validateErrs := err.(validator.ValidationErrors) // doing typecasting here
 			response.WriteJson(w, http.StatusBadRequest, response.ValidationError(validateErrs))
@@ -47,7 +47,17 @@ func New() http.HandlerFunc {
 		}
 
 		// w.Write([]byte("Welcome to student api end point"))
+		lastId, err := storage.CreateStudent(
+			student.Name,
+			student.Email,
+			student.Age,
+		)
 
-		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "OK"})
+		slog.Info("user created successfully", slog.String("userId", fmt.Sprint(lastId)))
+		if err != nil {
+			response.WriteJson(w, http.StatusInternalServerError, err)
+			return
+		}
+		response.WriteJson(w, http.StatusCreated, map[string]int64{"id": lastId})
 	}
 }

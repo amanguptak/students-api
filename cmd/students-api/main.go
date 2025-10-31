@@ -22,19 +22,22 @@ func main() {
 	cfg := config.MustLoad()
 	// fmt.Println(cfg,"hello")
 
-	// setup router
-	router := http.NewServeMux()
-
-	router.HandleFunc("POST /api/students", student.New())
-
 	//data base setup
-
-	_, err := sqlite.New(cfg)
+		storage, err := sqlite.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	slog.Info("storage initialized", slog.String("env", cfg.Env))
+
+	// setup router
+	router := http.NewServeMux()
+
+	router.HandleFunc("POST /api/students", student.New(storage))
+
+
+
+
 	// setup server
 
 	server := http.Server{
