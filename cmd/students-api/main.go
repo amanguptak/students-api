@@ -23,7 +23,7 @@ func main() {
 	// fmt.Println(cfg,"hello")
 
 	//data base setup
-		storage, err := sqlite.New(cfg)
+	storage, err := sqlite.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,11 +33,9 @@ func main() {
 	// setup router
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/students", student.New(storage))
-
-
-
-
+	router.HandleFunc("POST /api/students", student.New(storage)) // we have implemented interface so take look on this
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
+	router.HandleFunc("GET /api/students/{id}", student.GetList(storage))
 	// setup server
 
 	server := http.Server{
