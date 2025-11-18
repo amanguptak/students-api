@@ -13,10 +13,7 @@ type Sqlite struct {
 	Db *sql.DB
 }
 
-// GetStudents implements storage.Storage.
-func (s *Sqlite) GetStudents() ([]types.Student, error) {
-	panic("unimplemented")
-}
+
 
 func New(cfg *config.Config) (*Sqlite, error) {
 
@@ -85,7 +82,7 @@ func (s *Sqlite) GetStudentById(id int64) (types.Student, error) {
 	return student, nil
 }
 
-func GetStudents(s *Sqlite) ([]types.Student, error) {
+func (s *Sqlite) GetStudents() ([]types.Student, error) {
 	stmt, err := s.Db.Prepare("SELECT id , name ,email , age FROM students")
 
 	if err != nil {
